@@ -24,7 +24,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  res.send("Taskify API Running 🚀")
+  res.send("Taskify API Running")
 })
 
 // -----------Importing Routes----------------
