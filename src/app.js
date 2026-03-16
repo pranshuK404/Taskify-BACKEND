@@ -1,7 +1,7 @@
 import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser";
-import { errorHandler } from "./middlewares/error.middleware.js"
+import { errorHandler } from "./middlewares/errorHandler.middleware.js"
 
 const app = express()
 
@@ -27,6 +27,15 @@ app.get("/", (req, res) => {
   res.send("Taskify API Running 🚀")
 })
 
+// -----------Importing Routes----------------
+import indexRoutes from "./routes/index.routes.js"  
+
+
+// -----------Mounting Routes----------------
+app.use("/api/v1", indexRoutes)
+
+
+//-----------Error Handler Middleware----------------
 app.use(errorHandler)
 
 export default app
