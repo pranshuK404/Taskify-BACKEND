@@ -8,7 +8,6 @@ const userSchema = new Schema(
     username: {
       type: String,
       required: true,
-      unique: true,
       trim: true,
       lowercase: true,
       minlength: 5,
@@ -64,6 +63,7 @@ const userSchema = new Schema(
 
     emailVerificationExpiry: {
       type: Date,
+      select: false,
     },
     passwordResetToken: {
       type: String,
@@ -71,6 +71,7 @@ const userSchema = new Schema(
     },
     passwordResetExpiry: {
       type: Date,
+      select: false,
     },
     refreshToken: {
       type: String,
@@ -100,11 +101,19 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 
 userSchema.methods.toJSON = function () {
   const obj = this.toObject();
+
+  obj.id = obj._id;
+  delete obj._id;
+  delete obj.__v;
+
+  // remove sensitive
   delete obj.password;
   delete obj.refreshToken;
   delete obj.emailVerificationToken;
-  delete obj.passwordResetToken;
+  delete obj.emailVerificationExpiry;
+
   return obj;
 };
+
 
 export const User = mongoose.model("User", userSchema);
