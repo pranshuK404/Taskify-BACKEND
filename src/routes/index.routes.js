@@ -8,4 +8,5 @@ import authRoutes from "./auth.routes.js"
 // -----------Mounting Routes----------------
 router.use("/health", healthRoutes)
 router.use("/auth", authRoutes) //--auth routes
+
 export default router

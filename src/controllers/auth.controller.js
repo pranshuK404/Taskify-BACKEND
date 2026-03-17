@@ -24,6 +24,24 @@ const registerUserController = asyncHandler(async (req, res) => {
     );
 });
 
+//------   Verify email--------
+import { verifyEmail } from "../services/auth/verifyEmail.service.js";
+
+const emailVerificationController = asyncHandler(async (req, res) => {
+  const token= req.query.token?.trim()
+
+   if (!token) {
+    throw new ApiError(400, "Verification token is required");
+  }
+  const verifiedUser = await verifyEmail(token)
+    return res
+    .status(200)
+    .json(new ApiResponse(200, verifiedUser, "email verified successfully"));
+  
+})
+
+
 export const authControllers = {
   registerUserController,
+  emailVerificationController,
 };

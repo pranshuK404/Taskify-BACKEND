@@ -17,5 +17,10 @@ router.post(
   authControllers.registerUserController
 ); //--register route
 
+router.get(
+  "/verify-email",
+  authControllers.emailVerificationController
+) //--email verification route
+
 export default router
 
