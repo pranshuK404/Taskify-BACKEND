@@ -40,8 +40,26 @@ const emailVerificationController = asyncHandler(async (req, res) => {
   
 })
 
+//------   Resend verification email--------
+import { resendVerificationEmail } from "../services/auth/resendEmail.service.js";
+
+const resendVerificationEmailController = asyncHandler(async (req, res) => {
+ 
+   const email = req.body.email?.trim().toLowerCase();
+  if (!email) {
+  throw new ApiError(400, "Email is required");
+  }
+  const {message} = await resendVerificationEmail(email);
+  
+ return res
+    .status(200)
+    .json(new ApiResponse(200, [], message));
+
+})
+
 
 export const authControllers = {
   registerUserController,
   emailVerificationController,
+  resendVerificationEmailController
 };

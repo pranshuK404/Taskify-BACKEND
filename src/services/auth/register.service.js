@@ -33,7 +33,7 @@ export const registerUser=async(userData)=>{
 
 
   //---creating and sending verification email to client---
-const verificationLink = `${process.env.CLIENT_URL}/verify-email?token=${rawToken}`;
+const verificationLink = `${process.env.CLIENT_URL}/auth/verify-email?token=${rawToken}`;
 
   try {
     await sendMail(createdUser.email, verificationLink);

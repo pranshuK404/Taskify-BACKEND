@@ -22,5 +22,7 @@ router.get(
   authControllers.emailVerificationController
 ) //--email verification route
 
+router.post("/resend-email", authControllers.resendVerificationEmailController) //--resend verification email route
+
 export default router
 
