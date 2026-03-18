@@ -126,6 +126,31 @@ const changePasswordController = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, {}, message));
 });
 
+//------   Forgot password--------
+
+const forgotPasswordController = asyncHandler(async (req, res) => {
+
+  const email = req.body.email?.trim().toLowerCase();
+
+  const { message } = await passwordService.forgotPassword(email);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, message));
+})
+
+//------   Reset password--------
+
+const resetPasswordController = asyncHandler(async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  const { message } = await passwordService.resetPassword({resetToken:token?.trim(), newPassword});
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, {}, message));
+})
+
 export const authControllers = {
   registerUserController,
   emailVerificationController,
@@ -134,4 +159,6 @@ export const authControllers = {
   logoutUserController,
   refreshAcessTokenController,
   changePasswordController,
+  forgotPasswordController,
+  resetPasswordController,
 };

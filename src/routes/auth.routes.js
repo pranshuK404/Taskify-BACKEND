@@ -6,6 +6,7 @@ import { verifyJWT } from "../middlewares/authenticate.middleware.js";
 import { registerValidationRules } from "../validators/userRegister.validator.js";
 import { loginValidationRules } from "../validators/userLogin.validator.js";
 import { changePasswordValidationRules } from "../validators/changePassword.validator.js";
+import { resetPasswordValidationRules } from "../validators/resetPassword.validator.js";
 
 const router = Router();
 
@@ -46,6 +47,12 @@ router.post("/logout", verifyJWT, authControllers.logoutUserController);
 
 //--change password route--
 router.post("/change-password", verifyJWT, changePasswordValidationRules, validate, authControllers.changePasswordController);
+
+//--forgot password route--
+router.post("/forgot-password", authControllers.forgotPasswordController);
+
+//--reset password route--
+router.post("/reset-password",resetPasswordValidationRules,validate ,authControllers.resetPasswordController);
 
 
 
