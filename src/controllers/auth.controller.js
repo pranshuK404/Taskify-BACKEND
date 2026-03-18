@@ -1,6 +1,8 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { registerUser } from "../services/auth/register.service.js";
 import { ApiResponse } from "../utils/apiResponse.js";
+import { ApiError } from "../utils/apiError.js";
+import { cookieOptions } from "../constants.js";
 
 //------   Register a new user--------
 const registerUserController = asyncHandler(async (req, res) => {
@@ -54,7 +56,6 @@ const resendVerificationEmailController = asyncHandler(async (req, res) => {
 
 //------   Login user--------
 import { loginUser } from "../services/auth/login.service.js";
-import { cookieOptions } from "../constants.js";
 
 const loginUserController = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -74,9 +75,22 @@ const loginUserController = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "User logged in successfully"));
 });
 
+//------   Logout user--------
+import { userLogout } from "../services/auth/logout.service.js";
+const logoutUserController = asyncHandler(async (req, res) => {
+  const { message } = await userLogout(req.user);
+
+  return res
+    .status(200)
+    .clearCookie("accessToken", cookieOptions)
+    .clearCookie("refreshToken", cookieOptions)
+    .json(new ApiResponse(200, {}, message));
+});
+
 export const authControllers = {
   registerUserController,
   emailVerificationController,
   resendVerificationEmailController,
   loginUserController,
+  logoutUserController,
 };

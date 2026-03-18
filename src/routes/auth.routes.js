@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { validate } from "../middlewares/validator.middleware.js";
+import { verifyJWT } from "../middlewares/authenticate.middleware.js";
 
 //------ Importing Validation rules----------------
 import { registerValidationRules } from "../validators/userRegister.validator.js";
@@ -33,5 +34,8 @@ router.post(
   validate,
   authControllers.loginUserController,
 );
+
+//--logout route--
+router.post("/logout", verifyJWT, authControllers.logoutUserController);
 
 export default router;
