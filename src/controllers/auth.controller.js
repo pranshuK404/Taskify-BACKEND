@@ -87,10 +87,34 @@ const logoutUserController = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, message));
 });
 
+//------   Refreshing access token--------
+import { refreshAccessToken } from "../services/auth/refreshAccessToken.service.js"; 
+
+const refreshAcessTokenController = asyncHandler(async (req, res) => {
+  const refresh_token =
+    (req.cookies.refreshToken || req.body.refreshToken)?.trim(); 
+   const {accessToken,newRefreshToken} = await refreshAccessToken(refresh_token);
+
+   res
+    .status(200)
+    .cookie("accessToken", accessToken,
+       {
+      ...cookieOptions,
+      maxAge: 15 * 60 * 1000, // 15 min
+    })
+    .cookie("refreshToken", newRefreshToken, {
+      ...cookieOptions,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    })
+    .json(new ApiResponse(200, {}, "New tokens have been set"));
+
+})
+
 export const authControllers = {
   registerUserController,
   emailVerificationController,
   resendVerificationEmailController,
   loginUserController,
   logoutUserController,
+  refreshAcessTokenController
 };

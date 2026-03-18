@@ -35,7 +35,15 @@ router.post(
   authControllers.loginUserController,
 );
 
+//--refresh access token route--
+router.post("/refresh-tokens", authControllers.refreshAcessTokenController);
+
+//-----------protected routes for authentication-------------
+
 //--logout route--
 router.post("/logout", verifyJWT, authControllers.logoutUserController);
+
+
+
 
 export default router;
