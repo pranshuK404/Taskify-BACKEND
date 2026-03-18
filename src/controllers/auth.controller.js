@@ -88,17 +88,18 @@ const logoutUserController = asyncHandler(async (req, res) => {
 });
 
 //------   Refreshing access token--------
-import { refreshAccessToken } from "../services/auth/refreshAccessToken.service.js"; 
+import { refreshAccessToken } from "../services/auth/refreshAccessToken.service.js";
 
 const refreshAcessTokenController = asyncHandler(async (req, res) => {
-  const refresh_token =
-    (req.cookies.refreshToken || req.body.refreshToken)?.trim(); 
-   const {accessToken,newRefreshToken} = await refreshAccessToken(refresh_token);
+  const refresh_token = (
+    req.cookies.refreshToken || req.body.refreshToken
+  )?.trim();
+  const { accessToken, newRefreshToken } =
+    await refreshAccessToken(refresh_token);
 
-   res
+  res
     .status(200)
-    .cookie("accessToken", accessToken,
-       {
+    .cookie("accessToken", accessToken, {
       ...cookieOptions,
       maxAge: 15 * 60 * 1000, // 15 min
     })
@@ -107,8 +108,23 @@ const refreshAcessTokenController = asyncHandler(async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     })
     .json(new ApiResponse(200, {}, "New tokens have been set"));
+});
 
-})
+//------   Change password--------
+import { passwordService } from "../services/auth/password.service.js"; 
+
+const changePasswordController = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const { currentPassword, newPassword } = req.body;
+
+  const { message } = await passwordService.changePassword({
+    userId,
+    currentPassword,
+    newPassword,
+  });
+
+  return res.status(200).json(new ApiResponse(200, {}, message));
+});
 
 export const authControllers = {
   registerUserController,
@@ -116,5 +132,6 @@ export const authControllers = {
   resendVerificationEmailController,
   loginUserController,
   logoutUserController,
-  refreshAcessTokenController
+  refreshAcessTokenController,
+  changePasswordController,
 };

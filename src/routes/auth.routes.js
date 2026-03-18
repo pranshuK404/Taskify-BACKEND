@@ -5,6 +5,7 @@ import { verifyJWT } from "../middlewares/authenticate.middleware.js";
 //------ Importing Validation rules----------------
 import { registerValidationRules } from "../validators/userRegister.validator.js";
 import { loginValidationRules } from "../validators/userLogin.validator.js";
+import { changePasswordValidationRules } from "../validators/changePassword.validator.js";
 
 const router = Router();
 
@@ -43,6 +44,8 @@ router.post("/refresh-tokens", authControllers.refreshAcessTokenController);
 //--logout route--
 router.post("/logout", verifyJWT, authControllers.logoutUserController);
 
+//--change password route--
+router.post("/change-password", verifyJWT, changePasswordValidationRules, validate, authControllers.changePasswordController);
 
 
 
