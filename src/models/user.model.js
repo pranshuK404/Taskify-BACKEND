@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import bcryptjs from "bcryptjs";
-
+import jwt from "jsonwebtoken";
 
 const SALT_ROUNDS = 10;
 const userSchema = new Schema(
@@ -102,8 +102,8 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 userSchema.methods.toJSON = function () {
   const obj = this.toObject();
 
-  obj.id = obj._id;
-  delete obj._id;
+  // obj.id = obj._id;  ------ learn about it later----
+  // delete obj._id;
   delete obj.__v;
 
   // remove sensitive
@@ -113,6 +113,38 @@ userSchema.methods.toJSON = function () {
   delete obj.emailVerificationExpiry;
 
   return obj;
+};
+
+
+// creating and adding refresh and access token generator method to user prototype -----
+
+userSchema.methods.generateAccessToken = function () {
+  return jwt.sign(
+    {
+        _id: this._id.toString(),
+      email: this.email,
+      username: this.username,
+      role: this.role,
+      isVerified: this.isVerified,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+    },
+  );
+};
+
+userSchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+    },
+  );
 };
 
 

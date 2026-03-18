@@ -1,28 +1,37 @@
 import { Router } from "express";
 import { validate } from "../middlewares/validator.middleware.js";
+
+//------ Importing Validation rules----------------
 import { registerValidationRules } from "../validators/userRegister.validator.js";
+import { loginValidationRules } from "../validators/userLogin.validator.js";
 
-
-const router = Router()
+const router = Router();
 
 // -----------Importing Route controllers----------------
 import { authControllers } from "../controllers/auth.controller.js";
 
 // -----------Mounting Routes----------------
 
+//--register route
 router.post(
   "/register",
   registerValidationRules,
   validate,
-  authControllers.registerUserController
-); //--register route
+  authControllers.registerUserController,
+);
 
-router.get(
-  "/verify-email",
-  authControllers.emailVerificationController
-) //--email verification route
+//--email verification route
+router.get("/verify-email", authControllers.emailVerificationController);
 
-router.post("/resend-email", authControllers.resendVerificationEmailController) //--resend verification email route
+//--resend verification email route
+router.post("/resend-email", authControllers.resendVerificationEmailController);
 
-export default router
+//--login route
+router.post(
+  "/login",
+  loginValidationRules,
+  validate,
+  authControllers.loginUserController,
+);
 
+export default router;
