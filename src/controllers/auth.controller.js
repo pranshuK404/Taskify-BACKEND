@@ -173,7 +173,6 @@ const getMyProfileController = asyncHandler(async (req, res) => {
 import { updateProfile } from "../services/auth/updateUserProfile.service.js";
 
 const updateUserProfileController = asyncHandler(async (req, res) => {
-
   const { username, fullname } = req.body;
   const user = req.user;
 
@@ -183,6 +182,28 @@ const updateUserProfileController = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, updatedUser, "Profile updated successfully"));
 });
+
+//------   Request email change--------
+import { changeEmailService } from "../services/auth/changeEmail.service.js";
+
+const requestEmailChangeController = asyncHandler(async (req, res) => {
+  const { newEmail, password } = req.body;
+  const user = req.user;
+  const { message } = await changeEmailService.requestEmailChange({
+    newEmail,
+    password,
+    user,
+  });
+  return res.status(200).json(new ApiResponse(200, {}, message));
+});
+
+//------   Email verification--------
+
+const verifyEmailChangeController=asyncHandler(async(req,res)=>{
+ const {token }=req.body
+ const {message}=await changeEmailService.verifyEmailChange(token)
+ return res.status(200).json(new ApiResponse(200,{},message))
+})
 
 export const authControllers = {
   registerUserController,
@@ -196,4 +217,6 @@ export const authControllers = {
   resetPasswordController,
   getMyProfileController,
   updateUserProfileController,
+  requestEmailChangeController,
+  verifyEmailChangeController
 };

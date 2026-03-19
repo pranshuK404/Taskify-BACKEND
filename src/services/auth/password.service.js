@@ -73,7 +73,7 @@ const forgotPassword = async (email) => {
   };
 };
 
-//
+//----------------reset password service function---------
 
 const resetPassword = async ({ resetToken, newPassword }) => {
   if (!newPassword || !resetToken) {

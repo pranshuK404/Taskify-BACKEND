@@ -77,6 +77,11 @@ const userSchema = new Schema(
       type: String,
       select: false,
     },
+    newEmail:{
+      type: String,
+      trim: true,
+      lowercase: true,
+    }
   },
   { timestamps: true,
     versionKey: false

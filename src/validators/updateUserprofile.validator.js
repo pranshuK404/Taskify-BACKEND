@@ -21,21 +21,14 @@ export const fullnameRule = body("fullname")
   .matches(/<[^>]*>?/)
   .withMessage("Invalid characters in full name");
 
-// Email (optional)
-export const emailRule = body("email")
-  .optional()
-  .trim()
-  .isEmail()
-  .withMessage("Invalid email format")
-  .normalizeEmail();
-
 // Email (required - for change email flow)
 export const requiredEmailRule = body("newEmail")
   .notEmpty()
   .withMessage("New email is required")
   .isEmail()
   .withMessage("Invalid email format")
-  .normalizeEmail();
+  .normalizeEmail()
+  .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/);
 
 // Avatar (URL-based for now)
 export const avatarRule = body("avatar")
@@ -47,17 +40,17 @@ export const avatarRule = body("avatar")
 // --------- Combined Validators (per feature)---------------------
 
 // Update username + fullname
-export const updateBasicProfileValidation = [
+export const updateProfileValidationRules = [
   usernameRule,
   fullnameRule,
 ];
 
 // Update avatar
-export const updateAvatarValidation = [
+export const updateAvatarValidationRules = [
   avatarRule,
 ];
 
 // Request email change
-export const changeEmailValidation = [
+export const changeEmailValidationRules = [
   requiredEmailRule,
 ];

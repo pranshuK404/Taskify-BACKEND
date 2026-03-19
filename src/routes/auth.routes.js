@@ -7,7 +7,9 @@ import { registerValidationRules } from "../validators/userRegister.validator.js
 import { loginValidationRules } from "../validators/userLogin.validator.js";
 import { changePasswordValidationRules } from "../validators/changePassword.validator.js";
 import { resetPasswordValidationRules } from "../validators/resetPassword.validator.js";
-import { updateBasicProfileValidation } from "../validators/updateUserprofile.validator.js";
+import { updateProfileValidationRules } from "../validators/updateUserprofile.validator.js";
+import { changeEmailValidationRules } from "../validators/updateUserprofile.validator.js";
+
 
 const router = Router();
 
@@ -58,11 +60,19 @@ router.post("/reset-password",resetPasswordValidationRules,validate ,authControl
 //--get my profile route--
 router.get("/me", verifyJWT, authControllers.getMyProfileController);
 
-//--update profile----
+//--update basic profile----
 
-router.post("/update",verifyJWT,updateBasicProfileValidation,validate
+router.patch("/update-profile",verifyJWT,updateProfileValidationRules,validate
   ,authControllers.updateUserProfileController
 )
+
+//---request email change--------
+
+router.post("/change-email",verifyJWT,changeEmailValidationRules,validate,authControllers.requestEmailChangeController)
+
+//------verify email change--------
+
+router.post("/verify-email-change",authControllers.verifyEmailChangeController)
 
 
 export default router;
