@@ -111,7 +111,7 @@ const refreshAcessTokenController = asyncHandler(async (req, res) => {
 });
 
 //------   Change password--------
-import { passwordService } from "../services/auth/password.service.js"; 
+import { passwordService } from "../services/auth/password.service.js";
 
 const changePasswordController = asyncHandler(async (req, res) => {
   const userId = req.user._id;
@@ -129,27 +129,60 @@ const changePasswordController = asyncHandler(async (req, res) => {
 //------   Forgot password--------
 
 const forgotPasswordController = asyncHandler(async (req, res) => {
-
   const email = req.body.email?.trim().toLowerCase();
 
   const { message } = await passwordService.forgotPassword(email);
 
-  return res
-    .status(200)
-    .json(new ApiResponse(200, {}, message));
-})
+  return res.status(200).json(new ApiResponse(200, {}, message));
+});
 
 //------   Reset password--------
 
 const resetPasswordController = asyncHandler(async (req, res) => {
   const { token, newPassword } = req.body;
 
-  const { message } = await passwordService.resetPassword({resetToken:token?.trim(), newPassword});
+  const { message } = await passwordService.resetPassword({
+    resetToken: token?.trim(),
+    newPassword,
+  });
 
-    return res
+  return res.status(200).json(new ApiResponse(200, {}, message));
+});
+
+//------   Get my profile--------
+const getMyProfileController = asyncHandler(async (req, res) => {
+  const user = req.user;
+
+  const verifiedUser = {
+    _id: user._id,
+    username: user.username,
+    email: user.email,
+    fullname: user.fullname,
+    avatar: user.avatar,
+    role: user.role,
+    isVerified: user.isVerified,
+    createdAt: user.createdAt,
+  };
+
+  return res
     .status(200)
-    .json(new ApiResponse(200, {}, message));
-})
+    .json(new ApiResponse(200, verifiedUser, "User fetched successfully"));
+});
+
+//------   Update profile--------
+import { updateProfile } from "../services/auth/updateUserProfile.service.js";
+
+const updateUserProfileController = asyncHandler(async (req, res) => {
+
+  const { username, fullname } = req.body;
+  const user = req.user;
+
+  const updatedUser = await updateProfile({ username, fullname, user });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedUser, "Profile updated successfully"));
+});
 
 export const authControllers = {
   registerUserController,
@@ -161,4 +194,6 @@ export const authControllers = {
   changePasswordController,
   forgotPasswordController,
   resetPasswordController,
+  getMyProfileController,
+  updateUserProfileController,
 };

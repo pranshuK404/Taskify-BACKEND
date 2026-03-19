@@ -7,6 +7,7 @@ import { registerValidationRules } from "../validators/userRegister.validator.js
 import { loginValidationRules } from "../validators/userLogin.validator.js";
 import { changePasswordValidationRules } from "../validators/changePassword.validator.js";
 import { resetPasswordValidationRules } from "../validators/resetPassword.validator.js";
+import { updateBasicProfileValidation } from "../validators/updateUserprofile.validator.js";
 
 const router = Router();
 
@@ -54,6 +55,14 @@ router.post("/forgot-password", authControllers.forgotPasswordController);
 //--reset password route--
 router.post("/reset-password",resetPasswordValidationRules,validate ,authControllers.resetPasswordController);
 
+//--get my profile route--
+router.get("/me", verifyJWT, authControllers.getMyProfileController);
+
+//--update profile----
+
+router.post("/update",verifyJWT,updateBasicProfileValidation,validate
+  ,authControllers.updateUserProfileController
+)
 
 
 export default router;
