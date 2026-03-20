@@ -1,7 +1,5 @@
 import { body } from "express-validator";
 
-
-
 // Username
 export const usernameRule = body("username")
   .optional()
@@ -27,30 +25,20 @@ export const requiredEmailRule = body("newEmail")
   .withMessage("New email is required")
   .isEmail()
   .withMessage("Invalid email format")
-  .normalizeEmail()
-  .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/);
+  .normalizeEmail();
 
-// Avatar (URL-based for now)
-export const avatarRule = body("avatar")
+const passwordRule = body("password")
   .optional()
-  .isURL()
-  .withMessage("Avatar must be a valid URL");
-
+  .trim()
+  .notEmpty()
+  .withMessage("Password is required")
+  .isLength({ min: 8 })
+  .withMessage("Password must be at least 8 characters");
 
 // --------- Combined Validators (per feature)---------------------
 
 // Update username + fullname
-export const updateProfileValidationRules = [
-  usernameRule,
-  fullnameRule,
-];
-
-// Update avatar
-export const updateAvatarValidationRules = [
-  avatarRule,
-];
+export const updateProfileValidationRules = [usernameRule, fullnameRule];
 
 // Request email change
-export const changeEmailValidationRules = [
-  requiredEmailRule,
-];
+export const changeEmailValidationRules = [requiredEmailRule, passwordRule];

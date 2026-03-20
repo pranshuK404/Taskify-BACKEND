@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { validate } from "../middlewares/validator.middleware.js";
 import { verifyJWT } from "../middlewares/authenticate.middleware.js";
+import { upload } from "../middlewares/multer.middleware.js";
 
 //------ Importing Validation rules----------------
 import { registerValidationRules } from "../validators/userRegister.validator.js";
@@ -73,6 +74,14 @@ router.post("/change-email",verifyJWT,changeEmailValidationRules,validate,authCo
 //------verify email change--------
 
 router.post("/verify-email-change",authControllers.verifyEmailChangeController)
+
+//------update avatar--------
+
+router.patch("/update-avatar",verifyJWT,upload.single("avatar"),authControllers.updateAvatarController)
+
+//------delete avatar-------- 
+
+router.delete("/delete-avatar",verifyJWT,authControllers.deleteAvatarController)
 
 
 export default router;

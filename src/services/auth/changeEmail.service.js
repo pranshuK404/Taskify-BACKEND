@@ -1,13 +1,17 @@
-import { ApiError } from "../utils/apiError.js";
+import { ApiError } from "../../utils/apiError.js";
 import { User } from "../../models/user.model.js";
 import { cryptoTokenUtils } from "../../utils/cryptoToken.js";
-
-const requestEmailChange = async ({ normalizedEmail, password, user }) => {
-  if (!normalizedEmail || !password) {
+import { sendMail } from "../../utils/sendMail.js";
+const requestEmailChange = async ({ newEmail, password, userId }) => {
+  if (!newEmail || !password) {
     throw new ApiError(400, "Email and password are required");
   }
-
   const normalizedEmail = newEmail.toLowerCase();
+
+  const user = await User.findById(userId).select("+password");
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
   // -------- Verify password-----
   const isPasswordValid = await user.isPasswordCorrect(password);
   if (!isPasswordValid) {
@@ -28,7 +32,7 @@ const requestEmailChange = async ({ normalizedEmail, password, user }) => {
   const { rawToken, hashedToken, tokenExpiry } =
     cryptoTokenUtils.generateToken(20);
 
-  user.newEmail = normalizedEmail.toLowerCase();
+  user.newEmail = normalizedEmail
   user.emailVerificationToken = hashedToken;
   user.emailVerificationExpiry = tokenExpiry;
   await user.save({ validateBeforeSave: false });
@@ -56,7 +60,7 @@ const requestEmailChange = async ({ normalizedEmail, password, user }) => {
 
 const verifyEmailChange = async (token) => {
   if (!token) {
-    throw new ApiError(401, "Token is required");
+    throw new ApiError(400, "Token is required");
   }
   const hashedToken = cryptoTokenUtils.hashToken(token);
 
@@ -68,10 +72,16 @@ const verifyEmailChange = async (token) => {
   if (!user) {
     throw new ApiError(400, "Invalid or expired verification token");
   }
-  if (!user.normalizedEmail) {
+  if (!user.newEmail) {
     throw new ApiError(400, "No email change request found");
   }
-  user.email = user.normalizedEmail;
+  const existingUser = await User.findOne({ email: user.newEmail });
+
+  if (existingUser) {
+    throw new ApiError(409, "Email already in use");
+  }
+  user.email = user.newEmail;
+  user.isVerified = true
   user.newEmail = undefined;
   user.emailVerificationToken = undefined;
   user.emailVerificationExpiry = undefined;

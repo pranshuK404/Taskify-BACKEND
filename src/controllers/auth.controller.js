@@ -188,22 +188,52 @@ import { changeEmailService } from "../services/auth/changeEmail.service.js";
 
 const requestEmailChangeController = asyncHandler(async (req, res) => {
   const { newEmail, password } = req.body;
-  const user = req.user;
+  const userId = req.user._id;
   const { message } = await changeEmailService.requestEmailChange({
     newEmail,
     password,
-    user,
+    userId,
   });
   return res.status(200).json(new ApiResponse(200, {}, message));
 });
 
 //------   Email verification--------
 
-const verifyEmailChangeController=asyncHandler(async(req,res)=>{
- const {token }=req.body
- const {message}=await changeEmailService.verifyEmailChange(token)
- return res.status(200).json(new ApiResponse(200,{},message))
-})
+const verifyEmailChangeController = asyncHandler(async (req, res) => {
+  const { token } = req.body;
+  const { message } = await changeEmailService.verifyEmailChange(token);
+  return res.status(200).json(new ApiResponse(200, {}, message));
+});
+
+//------   update user avatar--------
+
+import { changeUserAvatar } from "../services/auth/changeAvatar.service.js";
+
+const updateAvatarController = asyncHandler(async (req, res) => {
+  if (!req.file) {
+    throw new ApiError(400, "Avatar file is required");
+  }
+  const user = req.user;
+
+  const { avatar } = await changeUserAvatar.updateAvatarService({
+    fileBuffer: req.file.buffer,
+    user,
+  });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, avatar, "Avatar updated successfully"));
+});
+
+//--------delete user avatar-------
+
+const deleteAvatarController = asyncHandler(async (req, res) => {
+  const user = req.user;
+  const { avatar } = await changeUserAvatar.deleteAvatarService(user);
+  return res
+    .status(200)
+    .json(new ApiResponse(200, avatar, "Avatar removed successfully"));
+});
 
 export const authControllers = {
   registerUserController,
@@ -218,5 +248,7 @@ export const authControllers = {
   getMyProfileController,
   updateUserProfileController,
   requestEmailChangeController,
-  verifyEmailChangeController
+  verifyEmailChangeController,
+  updateAvatarController,
+  deleteAvatarController,
 };

@@ -46,12 +46,11 @@ const userSchema = new Schema(
         type: String,
         default: "https://placehold.co/600x400",
       },
-      localPath: {
+      publicId: {
         type: String,
-        default: "",
+        default: null,
       },
     },
-
     isVerified: {
       type: Boolean,
       default: false,
@@ -77,15 +76,13 @@ const userSchema = new Schema(
       type: String,
       select: false,
     },
-    newEmail:{
+    newEmail: {
       type: String,
       trim: true,
       lowercase: true,
-    }
+    },
   },
-  { timestamps: true,
-    versionKey: false
-   },
+  { timestamps: true, versionKey: false },
 );
 
 //------- hashing password---------
@@ -120,13 +117,12 @@ userSchema.methods.toJSON = function () {
   return obj;
 };
 
-
 // creating and adding refresh and access token generator method to user prototype -----
 
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
-        _id: this._id.toString(),
+      _id: this._id.toString(),
       email: this.email,
       username: this.username,
       role: this.role,
@@ -143,7 +139,6 @@ userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
       _id: this._id,
-
     },
     process.env.REFRESH_TOKEN_SECRET,
     {
@@ -151,6 +146,5 @@ userSchema.methods.generateRefreshToken = function () {
     },
   );
 };
-
 
 export const User = mongoose.model("User", userSchema);
