@@ -12,6 +12,7 @@ import { projectControllers } from "../controllers/project.controller.js";
 
 // -----------Mounting Routes----------------
 
+//----create project route
 router.post(
   "/",
   verifyJWT,
@@ -19,5 +20,8 @@ router.post(
   validate,
   projectControllers.createProjectController,
 );
+
+//----get projects route
+router.get("/", verifyJWT, projectControllers.getProjectController);
 
 export default router;

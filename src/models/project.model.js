@@ -70,6 +70,8 @@ const projectSchema = new Schema(
   { timestamps: true },
 );
 
+projectSchema.index({ createdAt: -1 });  //--This makes sorting much faster.
+
 /* Auto update member count */
 projectSchema.pre("save", function () {
   this.memberCount = this.members.length;
