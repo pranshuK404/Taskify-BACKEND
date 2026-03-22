@@ -16,6 +16,7 @@ const projectSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
     createdBy: {
       type: Schema.Types.ObjectId,
@@ -39,6 +40,7 @@ const projectSchema = new Schema(
           type: Schema.Types.ObjectId,
           ref: "User",
           required: true,
+          index: true,
         },
         role: {
           type: String,
@@ -49,7 +51,6 @@ const projectSchema = new Schema(
     ],
     memberCount: {
       type: Number,
-      default: 1,
     },
     projectKey: {
       type: String,
