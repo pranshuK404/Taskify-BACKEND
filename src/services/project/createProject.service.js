@@ -1,4 +1,5 @@
 import { Project } from "../../models/project.model.js";
+import { ApiError } from "../../utils/apiError.js";
 import { generateProjectKey } from "../../utils/generateProjectKey.js";
 
 export const createProjectService = async ({
@@ -7,16 +8,25 @@ export const createProjectService = async ({
   visibility,
   userId,
 }) => {
-// Generate a unique project key and check if it already exists----
+  // Generate a unique project key and check if it already exists upto 10 times----
   let projectKey;
-  let exists = true;
+  let attempts = 0;
+  const MAX_ATTEMPTS = 10;
 
-  while (exists) {
+  while (attempts < MAX_ATTEMPTS) {
     projectKey = generateProjectKey(title);
 
-    const existing = await Project.findOne({ projectKey });
-    if (!existing) exists = false;
+    const exists = await Project.exists({ projectKey });
+
+    if (!exists) break;
+
+    attempts++;
   }
+
+  if (attempts === MAX_ATTEMPTS) {
+    throw new ApiError(500, "Unable to generate unique project key");
+  }
+
   ///---creating project document-----
   const createdProject = await Project.create({
     title,
@@ -30,7 +40,6 @@ export const createProjectService = async ({
         role: "admin",
       },
     ],
-    memberCount: 1,
     projectKey,
   });
   return createdProject;

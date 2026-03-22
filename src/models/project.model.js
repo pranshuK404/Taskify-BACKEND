@@ -6,11 +6,12 @@ const projectSchema = new Schema(
       type: String,
       required: true,
       trim: true,
-      toLowerCase: true,
+      lowerCase: true,
       index: true,
     },
     description: {
       type: String,
+      default: "",
     },
     adminId: {
       type: Schema.Types.ObjectId,
@@ -21,12 +22,14 @@ const projectSchema = new Schema(
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
 
     status: {
       type: String,
       enum: ["active", "completed", "archived"],
       default: "active",
+      index: true,
     },
 
     visibility: {
@@ -51,6 +54,7 @@ const projectSchema = new Schema(
     ],
     memberCount: {
       type: Number,
+      default: 0,
     },
     projectKey: {
       type: String,
@@ -60,9 +64,17 @@ const projectSchema = new Schema(
     },
     archivedAt: {
       type: Date,
+      default: null,
     },
   },
   { timestamps: true },
 );
+
+/* Auto update member count */
+projectSchema.pre("save", function () {
+  this.memberCount = this.members.length;
+});
+
+
 
 export const Project = mongoose.model("Project", projectSchema);
