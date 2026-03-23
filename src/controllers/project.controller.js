@@ -6,6 +6,7 @@ import { ApiResponse } from "../utils/apiResponse.js";
 import { createProjectService } from "../services/project/createProject.service.js";
 import { getProjectService } from "../services/project/getProject.service.js";
 import { getSingleProjectService } from "../services/project/getSingleProject.service.js";
+import { getProjectMembersService } from "../services/project/getProjectMembers.service.js";
 
 //---------CREATE PROJECT--------
 const createProjectController = asyncHandler(async (req, res) => {
@@ -50,9 +51,21 @@ const getSingleProjectController = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, project, "Project fetched successfully"));
 });
 
+//---GET PROJECT MEMBERS----
+const getProjectMembersController = asyncHandler(async (req, res) => {
+  const { projectId } = req.params;
+  const userId = req.user._id;
+
+  const members=await getProjectMembersService(projectId, userId);
+  return res
+    .status(200)
+    .json(new ApiResponse(200, members, "Members fetched successfully"));
+});
+
 
 export const projectControllers = {
   createProjectController,
   getProjectController,
   getSingleProjectController,
+  getProjectMembersController
 };

@@ -30,4 +30,14 @@ router.get(
   verifyJWT,
   projectControllers.getSingleProjectController,
 );
+
+//----get project members route
+router.get(
+  "/:projectId/members",
+  verifyJWT,
+  projectControllers.getProjectMembersController,
+);
+
+
+
 export default router;
