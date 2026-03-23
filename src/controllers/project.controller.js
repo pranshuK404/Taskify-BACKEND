@@ -1,5 +1,4 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 
 //---------IMPORTED SERVICES----------
@@ -7,6 +6,7 @@ import { createProjectService } from "../services/project/createProject.service.
 import { getProjectService } from "../services/project/getProject.service.js";
 import { getSingleProjectService } from "../services/project/getSingleProject.service.js";
 import { getProjectMembersService } from "../services/project/getProjectMembers.service.js";
+import { addMemberService } from "../services/project/addMember.service.js";
 
 //---------CREATE PROJECT--------
 const createProjectController = asyncHandler(async (req, res) => {
@@ -62,10 +62,26 @@ const getProjectMembersController = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, members, "Members fetched successfully"));
 });
 
+//----ADD MEMBER TO PROJECT----
+const addMemberController = asyncHandler(async (req, res) => {
+  const {email}=req.body;
+  const projectId=req.project._id
+  const projectTitle=req.project.title
+
+  const addedMember=await addMemberService(projectId,projectTitle,email);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, addedMember, "Member added successfully"));
+
+});
+
+
 
 export const projectControllers = {
   createProjectController,
   getProjectController,
   getSingleProjectController,
-  getProjectMembersController
+  getProjectMembersController,
+  addMemberController
 };

@@ -40,6 +40,7 @@ export const createProjectService = async ({
         role: "admin",
       },
     ],
+    memberCount: 1,
     projectKey,
   });
   return createdProject;

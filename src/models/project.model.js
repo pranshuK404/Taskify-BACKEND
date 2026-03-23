@@ -6,7 +6,7 @@ const projectSchema = new Schema(
       type: String,
       required: true,
       trim: true,
-      lowerCase: true,
+      lowercase: true,
       index: true,
     },
     description: {
@@ -72,11 +72,9 @@ const projectSchema = new Schema(
 
 projectSchema.index({ createdAt: -1 });  //--This makes sorting much faster.
 
-/* Auto update member count */
-projectSchema.pre("save", function () {
-  this.memberCount = this.members.length;
-});
-
-
+projectSchema.index(
+  { _id: 1, "members.userId": 1 },
+  { unique: true }
+);
 
 export const Project = mongoose.model("Project", projectSchema);
