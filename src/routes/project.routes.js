@@ -24,4 +24,10 @@ router.post(
 //----get projects route
 router.get("/", verifyJWT, projectControllers.getProjectController);
 
+//----get single project route
+router.get(
+  "/:projectId",
+  verifyJWT,
+  projectControllers.getSingleProjectController,
+);
 export default router;
