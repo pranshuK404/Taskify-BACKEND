@@ -31,4 +31,11 @@ router.get(
   projectControllers.getSingleProjectController,
 );
 
+//----leave project route
+router.delete(
+  "/:projectId",
+  verifyJWT,
+  projectControllers.leaveProjectController,
+);
+
 export default router;
