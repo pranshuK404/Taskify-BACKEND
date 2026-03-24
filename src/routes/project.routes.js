@@ -49,7 +49,14 @@ router.post(
   validate,
   projectControllers.addMemberController,
 );
-
+ 
+//----remove member from project route
+router.delete(
+  "/:projectId/members/:memberId",
+  verifyJWT,
+  verifyProjectAdmin,
+  projectControllers.removeMemberController,
+);
 
 
 export default router;

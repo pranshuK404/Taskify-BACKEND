@@ -7,6 +7,7 @@ import { getProjectService } from "../services/project/getProject.service.js";
 import { getSingleProjectService } from "../services/project/getSingleProject.service.js";
 import { getProjectMembersService } from "../services/project/getProjectMembers.service.js";
 import { addMemberService } from "../services/project/addMember.service.js";
+import { removeMemberService } from "../services/project/removeMember.service.js";
 
 //---------CREATE PROJECT--------
 const createProjectController = asyncHandler(async (req, res) => {
@@ -75,6 +76,18 @@ const addMemberController = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, addedMember, "Member added successfully"));
 
 });
+//-----REMOVE MEMBER FROM PROJECT----
+
+const removeMemberController = asyncHandler(async (req, res) => {
+  const memberId= req.params.memberId;
+  const project=req.project
+
+  const {removedMemberId, memberCount}=await removeMemberService(project,memberId);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {removedMemberId, memberCount}, "Member removed successfully"));
+});
 
 
 
@@ -83,5 +96,6 @@ export const projectControllers = {
   getProjectController,
   getSingleProjectController,
   getProjectMembersController,
-  addMemberController
+  addMemberController,
+  removeMemberController
 };
