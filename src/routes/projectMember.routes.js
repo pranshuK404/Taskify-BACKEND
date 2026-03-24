@@ -38,4 +38,11 @@ router.delete(
   projectMemberControllers.removeMemberController,
 );
 
+//----leave project route
+router.delete(
+  "/:projectId/leave",
+  verifyJWT,
+  projectMemberControllers.leaveProjectController,
+);
+
 export default router;
